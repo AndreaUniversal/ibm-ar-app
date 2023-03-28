@@ -57,9 +57,11 @@
       });
 
       pose.onResults((results) => {
-        const pose = results.poseLandmarks;
+       const pose = results.poseLandmarks;
         // update the 3D model position and rotation based on the user's pose
-        // ...
+        const model = document.querySelector("#model");
+        model.object3D.position.set(pose[11].x, pose[11].y, pose[11].z);
+        model.object3D.rotation.set(0, Math.atan2(pose[11].y - pose[12].y, pose[11].x - pose[12].x), 0);
       });
 
       const camera = document.querySelector("[camera]");
