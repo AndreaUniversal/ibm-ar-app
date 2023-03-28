@@ -1,0 +1,73 @@
+<html>
+  <head>
+    <!-- Load A-Frame library -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <!-- Load MediaPipe Pose library -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.3.7/mediapipe.js"></script>
+    <!-- Load AR.js library -->
+    <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar-nft.js"></script>
+  </head>
+
+  <body style="margin: 0; overflow: hidden;">
+    <!-- Set up the A-Frame scene and AR.js tracking -->
+    <a-scene
+      embedded
+      arjs="sourceType: webcam; detectionMode: mono_and_matrix; matrixCodeType: 3x3;"
+    >
+    
+    <!-- Add a 3D model to the scene that will be overlaid on the marker -->
+    <a-entity
+      id="model"
+      gltf-model="url(path/to/model.gltf)"
+      scale="0.05 0.05 0.05"
+      position="0 0 0"
+      rotation="0 180 0"
+      visible="false"
+    ></a-entity>
+    
+    <!-- Add a marker to the scene that will trigger the 3D model to appear -->
+    <a-nft
+      type="nft"
+      url="path/to/marker.patt"
+      smooth="true"
+      smoothCount="10"
+      smoothTolerance=".01"
+      smoothThreshold="5"
+    >
+      <a-entity
+        id="overlay"
+        position="0 0 0"
+        visible="false"
+      ></a-entity>
+    </a-nft>
+    
+    <!-- Use MediaPipe Pose to detect and display the user's pose in the scene -->
+    <script>
+      const video = document.querySelector("video");
+
+      const pose = new window.medipaipe.Pose({
+        locateFile: (file) => {
+          return `https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.3.7/${file}`;
+        },
+      });
+
+      pose.setOptions({
+        selfieMode: true,
+        upperBodyOnly: true,
+      });
+
+      pose.onResults((results) => {
+        const pose = results.poseLandmarks;
+        // update the 3D model position and rotation based on the user's pose
+        // ...
+      });
+
+      const camera = document.querySelector("[camera]");
+      camera.addEventListener("loaded", () => {
+        pose.onVideoFrame(video);
+      });
+    </script>
+
+    </a-scene>
+  </body>
+</html>
